@@ -1,0 +1,26 @@
+name: Build and run
+on:
+  workflow_dispatch:        # permite lanzarlo manualmente desde Actions
+  push:                     # lo ejecuta en cada push a main
+    branches: [ main ]
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Compile
+        run: javac src/Main.java
+      - name: Run BFS and A*
+        run: |
+          echo "Caso TP: B(0) -> A(+3), ΔH=1"
+          java -cp src Main 0 3 1 20 | tee output.txt
+      - name: Upload console output
+        uses: actions/upload-artifact@v4
+        with:
+          name: console-output
+          path: output.txt
